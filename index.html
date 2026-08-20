@@ -1,0 +1,541 @@
+<meta charset="utf-8">
+<title>What Coda Costs</title>
+<style>
+  :root{--bg:#faf9f7;--card:#fff;--ink:#2b2523;--dim:#6f6663;--line:#e6e1db;
+        --good:#3f6b4a;--bad:#a8442a;--accent:#8a5a3b}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:16px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 22px 60px}
+  h1{font-size:23px;margin:0 0 4px;font-weight:650}
+  .lede{color:var(--dim);font-size:14.5px;margin:0 0 24px;max-width:680px}
+  .num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+
+  .big{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:26px}
+  .b{flex:1 1 210px;background:var(--card);border:1px solid var(--line);
+     border-radius:8px;padding:15px 17px}
+  .b .k{font-size:13px;color:var(--dim);margin-bottom:5px}
+  .b .v{font-size:31px;font-weight:650;letter-spacing:-.5px}
+  .b .n{font-size:13px;color:var(--dim);margin-top:4px}
+
+  .cols{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 20px}
+  #in{flex:1 1 330px;min-width:300px}
+  #out{flex:1 1 420px;min-width:340px}
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th{text-align:right;font-size:12.5px;color:var(--dim);font-weight:600;
+     padding:6px 8px;border-bottom:1px solid var(--line)}
+  th:first-child{text-align:left}
+  td{padding:7px 8px;text-align:right;border-bottom:1px solid #f4f1ed}
+  td:first-child{text-align:left;font-weight:600}
+  tr.here td{background:#f7f2ea}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);
+     margin:0 0 15px;font-weight:650}
+
+  .s{margin-bottom:17px}
+  .s label{display:flex;justify-content:space-between;font-size:14.5px;margin-bottom:5px}
+  .s label b{font-weight:650}
+  .s .h{font-size:12.5px;color:var(--dim);margin-top:3px}
+  input[type=range]{width:100%;accent-color:var(--accent);margin:0}
+
+  .line{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px solid #f1ede8}
+  .line:last-child{border:0}
+  .line .t{flex:1}
+  .line .t b{font-weight:600}
+  .line .t span{display:block;font-size:12.5px;color:var(--dim)}
+  .line .a{font-weight:650;white-space:nowrap}
+  .line .p{width:46px;text-align:right;color:var(--dim);font-size:13px}
+
+  .seg{display:flex;gap:0;border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-top:4px}
+  .seg button{flex:1;border:0;background:var(--card);color:var(--dim);cursor:pointer;
+              padding:9px 6px;font:inherit;font-size:13.5px;line-height:1.25;
+              border-right:1px solid var(--line);transition:none}
+  .seg button:last-child{border-right:0}
+  .seg button b{display:block;font-weight:650;color:var(--ink);font-size:14px}
+  .seg button.on{background:var(--accent);color:#fdf7f1}
+  .seg button.on b{color:#fff}
+  .seg button:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+  .barwrap{margin:2px 0 20px}
+  .bar{display:flex;height:34px;border-radius:6px;overflow:hidden;background:#efeae3}
+  .bar i{display:block;height:100%}
+  .barkey{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--dim)}
+  .barkey b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+  .vend{margin-top:18px}
+  .vend h4{font-size:14px;margin:0 0 2px;font-weight:650;display:flex;
+           justify-content:space-between;align-items:baseline}
+  .vend h4 em{font-style:normal;font-weight:650}
+  .vend .who{font-size:12.5px;color:var(--dim);margin:0 0 8px}
+  .vend .it{display:flex;align-items:baseline;gap:9px;padding:5px 0;
+            border-bottom:1px solid #f4f1ed;font-size:14px}
+  .vend .it:last-child{border:0}
+  .vend .it .sw{width:9px;height:9px;border-radius:2px;flex:none}
+  .vend .it .nm{flex:1}
+  .vend .it .am{font-weight:600;white-space:nowrap}
+  .vend .it .pc{width:42px;text-align:right;color:var(--dim);font-size:12.5px}
+  .say{margin-top:30px}
+  .say h3{font-size:16px;margin:22px 0 7px;font-weight:650}
+  .say p{margin:0 0 11px;max-width:760px;font-size:14.5px}
+  .pos{color:var(--good)}
+  .neg{color:var(--bad)}
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);
+         font-size:13px;color:var(--dim);max-width:760px;line-height:1.55}
+</style>
+
+<div class="wrap">
+  <h1>What does Coda cost to run?</h1>
+  <p class="lede">Move the four sliders on the left and every number on the page updates as you go.
+  The five figures across the top are the ones worth watching. Rates come straight from Google and
+  Vercel's own published prices; everything assumed rather than measured is listed at the bottom.</p>
+
+  <div class="big">
+    <div class="b"><div class="k">One memorial costs you</div>
+      <div class="v num" id="perMo">-</div><div class="n">per month</div></div>
+    <div class="b"><div class="k">Over ten years, that is</div>
+      <div class="v num" id="perLife">-</div><div class="n">to keep one memorial for a decade</div></div>
+    <div class="b"><div class="k">Over a hundred years</div>
+      <div class="v num" id="perCentury">-</div><div class="n">at today's prices, nothing assumed about the future</div></div>
+    <div class="b"><div class="k">You keep, per memorial, over 100 years</div>
+      <div class="v num" id="profit">-</div><div class="n" id="profitNote">-</div></div>
+    <div class="b"><div class="k">Your whole bill</div>
+      <div class="v num" id="bill">-</div><div class="n" id="billNote">-</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="card" id="in"><h2>Your numbers</h2><div id="sliders"></div>
+      <div class="s" style="margin-bottom:0">
+        <label><span>Which photo size visitors get</span></label>
+        <div class="seg" id="photoMode" role="group" aria-label="Photo size sent to visitors">
+          <button type="button" data-m="orig"><b>Full size</b>as uploaded</button>
+          <button type="button" data-m="med"><b>Medium</b>1600px wide</button>
+          <button type="button" data-m="thumb"><b>Thumbnail</b>400px wide</button>
+        </div>
+        <div class="h" id="modeHint"></div>
+      </div>
+    </div>
+    <div class="card" id="out">
+      <h2>Where the money goes each month</h2>
+      <div id="break"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:22px">
+    <h2>What one memorial costs, and who gets paid</h2>
+    <p style="margin:-6px 0 14px;font-size:14px;color:var(--dim)">
+      The cost of adding one more memorial, shown as ten-year totals so the figures stay readable.
+      Multiply by ten for the hundred-year number. The flat hosting fee is left out because it does
+      not change when you add one.</p>
+    <div class="barwrap">
+      <div class="bar" id="bar"></div>
+      <div class="barkey" id="barkey"></div>
+    </div>
+    <div id="vendors"></div>
+  </div>
+
+  <div class="card" style="margin-top:22px">
+    <h2>How big the photos are when someone opens a memorial</h2>
+    <p style="margin:-6px 0 14px;font-size:14px;color:var(--dim)">
+      Every photo is saved at three sizes. Which one the page sends to a visitor is a choice, and
+      it changes the bill more than anything else on this page.</p>
+    <table id="photoOpts"></table>
+    <p id="photoNote" style="margin:14px 0 0;font-size:14px"></p>
+  </div>
+
+  <div class="card" style="margin-top:22px">
+    <h2>What each price leaves you</h2>
+    <p style="margin:-6px 0 14px;font-size:14px;color:var(--dim)">
+      Same memorial, same costs. Only the price changes. The middle column is what Stripe takes.</p>
+    <table id="prices"></table>
+  </div>
+
+  <div class="say" id="say"></div>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+/* Cost model for a digital memorial service.
+   Rates checked 17 August 2026 against Google Cloud and Vercel published pricing.
+   Every rate carries a comment saying exactly what it covers. */
+const R = {
+  read:6e-7,          // Firestore document read (nam5: $0.06 per 100,000)
+  store:0.02,         // Cloud Storage, per GiB per month, single-region Standard
+  egress:0.12,        // Bandwidth out to a visitor, per GiB, first 10 TiB
+  classA:5e-6,        // Storage write operation
+  classB:4e-7,        // Storage read operation
+  vercelBase:20.00,   // Vercel Pro, flat monthly
+  vercelGB:0.15,      // Vercel bandwidth past the included 1 TB
+  vercelEdgeM:2.00,   // Vercel requests past the included 10 million
+  imgTrans:0.05,      // Vercel image resizing, per 1,000
+  imgRead:0.40,       // Vercel image cache read, per million 8 KiB units
+  imgWrite:4.00,      // Vercel image cache write, per million 8 KiB units
+  sms:0.01,           // One sign-in text message, United States
+  fsEgress:0.12,      // Firestore bandwidth, per GiB, past the free 10 GiB
+  crReqM:0.40,        // Cloud Run request, per million
+  crCpu:0.000024,     // Cloud Run processor time, per second
+  crMem:0.0000025,    // Cloud Run memory, per GiB per second
+  email:0.001,        // One invite email. Provider not yet chosen, so this is a guess.
+  mau1:0.0055, mau2:0.0046, mau3:0.0032, mau4:0.0025,
+  stripePct:0.029, stripeFix:0.30
+};
+const FREE = { read:1.5e6, store:5, egress:93.13, classA:5000, classB:50000,
+               vercelGB:1000, vercelEdge:1e7, sms:300,
+               fsEgress:10, crReq:2e6, crCpu:180000, crMem:360000, mau:50000 };
+
+/* Pinned assumptions, spelled out in the footer. */
+const K = {
+  srcMiB:4.0, origRatio:0.625, medMiB:0.40, thumbMiB:0.04,
+  galleryShare:0.667, blockShare:0.444, comments:10,
+  returning:0.5, contributors:3, months:120,
+  vercelMiBPerView:2.65, edgePerView:70, smsPerSignup:1.8,
+  imgPerView:11, imgKiB:150, imgMiss:0.05, imgGlobal:0.20,
+  capsuleKiB:30, commentKiB:0.5, reactionKiB:0.2, reactionStock:55,
+  buildSecPerPhoto:2.3, fnMemGiB:0.5, fnReqPerBuild:8,
+  invitesPerMemorial:3, activeShare:0.15
+};
+
+const S = [
+ {k:'memorials', l:'How many memorials you have', min:0, max:1000, def:600,
+  h:'What you have live today, or where you expect to be. The scale is curved so the small numbers are easy to reach.'},
+ {k:'photos', l:'Photos in a typical memorial', min:10, max:300, step:5, def:45,
+  h:'Each photo is stored three times: full size, medium, and a thumbnail.'},
+ {k:'views', l:'People who open each memorial a month', min:0, max:100, def:10,
+  h:'Half are assumed to be repeat visitors, who cost almost nothing.'},
+ {k:'price', l:'What you charge, one time', min:0, max:299, def:49,
+  h:'Used to work out what you keep after Google, Vercel and Stripe.'},
+];
+const V = {}; S.forEach(s => V[s.k] = s.def);
+let MODE = 'orig';                                  // which variant the page sends to visitors
+const MODES = { orig:0.625*4.0, med:0.40, thumb:0.04 };   // MiB per photo, recomputed below
+const modeMiB = () => MODE === 'orig' ? K.srcMiB*K.origRatio : MODE === 'med' ? K.medMiB : K.thumbMiB;
+const memorials = () => Math.max(1, Math.round(Math.exp((V.memorials/1000)*Math.log(100000))));
+
+const $ = id => document.getElementById(id);
+const price$ = p => '$' + (p % 1 === 0 ? p : p.toFixed(2));
+const money = v => {
+  const neg = v < 0, n = Math.abs(v);
+  if (n < 0.0005) return '$0';                       // rounds to nothing, say so plainly
+  const body = n < 1    ? n.toFixed(3)
+             : n < 1000 ? n.toFixed(2)
+             : Math.round(n).toLocaleString();
+  return (neg ? '-$' : '$') + body;
+};
+
+function model(n, viewMiB){
+  const P = V.photos;
+  const viewMiBEach = viewMiB === undefined ? modeMiB() : viewMiB;
+  const storedPerPhoto = K.srcMiB * K.origRatio + K.medMiB + K.thumbMiB;
+  const G = K.galleryShare * P, B = K.blockShare * P;
+  const readsPerView = 105 + 3*B + G;
+
+  const allViews  = n * V.views;
+  const coldViews = allViews * (1 - K.returning);
+  const newPerMonth = n / K.months;
+
+  const storeGiB  = n * P * storedPerPhoto / 1024;
+  const egressGiB = coldViews * G * viewMiBEach / 1024;
+  const reads     = allViews * readsPerView;
+  const classA    = newPerMonth * P * 4;
+  const classB    = newPerMonth * P * 3 + coldViews * G;
+  const vGB       = allViews * K.vercelMiBPerView * 1048576 / 1e9;
+  const vEdge     = allViews * K.edgePerView;
+  const imgReqs   = allViews * K.imgPerView;
+  const imgUnits  = K.imgKiB / 8;
+  const imgCost   = imgReqs * K.imgMiss / 1e3 * R.imgTrans
+                  + imgReqs * K.imgGlobal * imgUnits / 1e6 * R.imgRead
+                  + imgReqs * K.imgMiss   * imgUnits / 1e6 * R.imgWrite;
+
+  // Database bandwidth: the bytes those reads actually send back.
+  const fsEgressGiB = allViews *
+    (K.capsuleKiB + K.comments*K.commentKiB + 2*K.reactionStock*K.reactionKiB) / (1024*1024);
+  // Photo processing when a memorial is built.
+  const buildSec = newPerMonth * P * K.buildSecPerPhoto;
+  // Accounts that sign in during the month. Viewers need no account.
+  const mau = n * K.contributors * K.activeShare + newPerMonth;
+  const mauCost = (() => {
+    let x = Math.max(0, mau - FREE.mau), c = 0;
+    const a = Math.min(x, 50000);   c += a*R.mau1; x -= a;
+    const b = Math.min(x, 900000);  c += b*R.mau2; x -= b;
+    const d = Math.min(x, 9000000); c += d*R.mau3; x -= d;
+    return c + x*R.mau4;
+  })();
+
+  const over = (q,f) => Math.max(0, q - f);
+  const c = {
+    store  : over(storeGiB, FREE.store) * R.store,
+    egress : over(egressGiB, FREE.egress) * R.egress,
+    reads  : over(reads, FREE.read) * R.read,
+    ops    : over(classA, FREE.classA) * R.classA + over(classB, FREE.classB) * R.classB,
+    vercelFlat : R.vercelBase,
+    vercelBand : over(vGB, FREE.vercelGB) * R.vercelGB,
+    vercelReq  : over(vEdge, FREE.vercelEdge) / 1e6 * R.vercelEdgeM,
+    vercelImg  : imgCost,
+    sms    : over(newPerMonth * K.smsPerSignup, FREE.sms) * R.sms,
+    dbBand : over(fsEgressGiB, FREE.fsEgress) * R.fsEgress,
+    build  : over(newPerMonth * K.fnReqPerBuild, FREE.crReq)/1e6 * R.crReqM
+             + over(buildSec, FREE.crCpu) * R.crCpu
+             + over(buildSec * K.fnMemGiB, FREE.crMem) * R.crMem,
+    email  : newPerMonth * K.invitesPerMemorial * R.email,
+    mau    : mauCost
+  };
+  c.vercel = c.vercelFlat + c.vercelBand + c.vercelReq + c.vercelImg;
+  c.total = c.store + c.egress + c.reads + c.ops + c.vercel + c.sms
+          + c.dbBand + c.build + c.email + c.mau;
+  return c;
+}
+
+function render(){
+  const n = memorials();
+  const now = model(n);
+  const marg = Math.max(0, model(n+1).total - now.total);
+  const life    = marg * K.months;          // ten years, still shown as a headline
+  const century = marg * 1200;              // a hundred years, what the plan actually promises
+  const fee     = V.price > 0 ? V.price * R.stripePct + R.stripeFix : 0;
+  const profit  = V.price - fee - century;  // you are selling a century, so cover a century
+
+  $('perMo').textContent   = money(marg);
+  $('perLife').textContent = money(life);
+  $('perCentury').textContent = money(century);
+  $('profit').textContent  = money(profit);
+  $('profit').className    = 'v num ' + (profit >= 0 ? 'pos' : 'neg');
+  $('profitNote').textContent = V.price > 0
+    ? 'after a century of costs and ' + money(fee) + ' to Stripe'
+    : 'you are charging nothing';
+  $('bill').textContent    = money(now.total);
+  $('billNote').textContent = money(now.total * 12) + ' a year, for ' + n.toLocaleString() + ' memorials';
+
+  const rows = [
+    ['Keeping the photos', 'Google charges rent on every photo, every month, for as long as you keep it.', now.store],
+    ['Showing them to visitors', 'Bandwidth. Charged each time someone new opens a memorial.', now.egress],
+    ['Loading the page', 'Reading the memorial, its comments and its reactions from the database.', now.reads],
+    ['Uploading and fetching files', 'A small fee every time a file is written or read.', now.ops],
+    ['Hosting the website', 'Vercel. Twenty dollars flat, plus traffic and image resizing once you are large.', now.vercel],
+    ['Sign-in text messages', 'One cent each in the US. The first ten a day are free.', now.sms],
+    ['Database bandwidth', 'Sending the memorial text and comments back to the browser.', now.dbBand],
+    ['Processing uploaded photos', 'Resizing each photo into three sizes when a memorial is saved.', now.build],
+    ['Invite emails', 'Sent when someone is asked to contribute. Provider not chosen yet, so this is a guess.', now.email],
+    ['User accounts', 'Charged only for people who sign in that month, and only past fifty thousand.', now.mau]
+  ].filter(r => r[2] > 0.0001).sort((a,b) => b[2] - a[2]);
+
+  $('break').innerHTML = rows.length
+    ? rows.map(([t,d,v]) =>
+        '<div class="line"><div class="t"><b>' + t + '</b><span>' + d + '</span></div>' +
+        '<div class="a num">' + money(v) + '</div>' +
+        '<div class="p num">' + (v/now.total*100).toFixed(0) + '%</div></div>').join('')
+    : '<p style="color:var(--dim)">Everything is inside a free allowance right now.</p>';
+
+  // ---- one memorial, grouped by who you actually pay ----------------------
+  const nxt = model(n+1);
+  const d = k => Math.max(0, nxt[k] - now[k]);          // what one more memorial adds
+  const groups = [
+    { who:'Google Cloud', sub:'Firebase storage, database and photo processing',
+      items:[
+        ['Sending photos to visitors', 'egress',  '#8a5a3b'],
+        ['Storing the photos',         'store',   '#a97b58'],
+        ['Database reads',             'reads',   '#bd9576'],
+        ['Uploads and file fetches',   'ops',     '#cfae95'],
+        ['Resizing photos on upload',  'build',   '#dcc3ae'],
+        ['Database bandwidth',         'dbBand',  '#e6d3c4'],
+        ['Sign-in text messages',      'sms',     '#efe2d8'],
+        ['User accounts',              'mau',     '#f4ebe4'],
+      ]},
+    { who:'Vercel', sub:'Serving the website itself',
+      items:[
+        ['Website bandwidth',  'vercelBand', '#4a6670'],
+        ['Page requests',      'vercelReq',  '#6d8892'],
+        ['Image resizing',     'vercelImg',  '#93a9b1'],
+      ]},
+    { who:'Email provider', sub:'Not chosen yet, so this one is a guess',
+      items:[ ['Invite emails', 'email', '#b9a894'] ]},
+  ];
+
+  const flat = groups.flatMap(g => g.items.map(([nm,k,c]) => ({nm, c, v:d(k), who:g.who})));
+  const totalOne = flat.reduce((a,x) => a + x.v, 0);
+
+  const SHOWN = 0.01 / 120;                 // hide anything under a cent across ten years
+
+  $('bar').innerHTML = totalOne > 0
+    ? flat.filter(x => x.v/totalOne > 0.002)
+          .map(x => '<i style="width:' + (x.v/totalOne*100).toFixed(2) + '%;background:' + x.c +
+                    '" title="' + x.nm + ', ' + money(x.v*120) + ' over ten years"></i>').join('')
+    : '';
+
+  $('barkey').innerHTML = groups
+    .map(g => ({ g, sum: g.items.reduce((a,[,k]) => a + d(k), 0) }))
+    .filter(x => x.sum > SHOWN)
+    .map(({g,sum}) => '<span><b style="background:' + g.items[0][2] + '"></b>' + g.who + ' ' +
+        money(sum*120) + ' (' + (sum/totalOne*100).toFixed(0) + '%)</span>').join('');
+
+  $('vendors').innerHTML = groups.map(g => {
+    const rows = g.items.filter(([,k]) => d(k) > SHOWN);
+    const rest = g.items.filter(([,k]) => d(k) <= SHOWN).reduce((a,[,k]) => a + d(k), 0);
+    const sum  = g.items.reduce((a,[,k]) => a + d(k), 0);
+    if (sum <= SHOWN) return '';
+    const row = (nm, c, v) =>
+      '<div class="it"><span class="sw" style="background:' + c + '"></span>' +
+      '<span class="nm">' + nm + '</span>' +
+      '<span class="am num">' + money(v*120) + '</span>' +
+      '<span class="pc num">' + (v/totalOne*100).toFixed(0) + '%</span></div>';
+    return '<div class="vend"><h4><span>' + g.who + '</span>' +
+      '<em class="num">' + money(sum*120) + '</em></h4>' +
+      '<p class="who">' + g.sub + '</p>' +
+      rows.map(([nm,k,c]) => row(nm, c, d(k))).join('') +
+      (rest > 0.0000001 ? row('Everything else', '#e8e0d7', rest) : '') +
+      '</div>';
+  }).join('') +
+  '<div class="vend" style="border-top:1px solid var(--line);padding-top:12px;margin-top:18px">' +
+  '<h4><span>One memorial, all in</span><em class="num">' + money(totalOne*120) + '</em></h4>' +
+  '<p class="who">That is ' + money(totalOne) + ' a month, ' + money(totalOne*120) +
+  ' over ten years, ' + money(totalOne*1200) + ' over a hundred. Figures in this panel are ' +
+  'ten-year totals, because the monthly numbers are fractions of a cent. The flat ' +
+  money(R.vercelBase) + ' hosting fee sits outside this, shared across all ' +
+  n.toLocaleString() + ' memorials.</p></div>';
+
+  const points = [29,49,99,125,149,199];
+  if (!points.includes(V.price) && V.price > 0) points.push(V.price);
+  points.sort((a,b)=>a-b);
+  const okCount = points.filter(p => p - (p*R.stripePct + R.stripeFix) - century >= 0).length;
+  const big = rows[0];
+  $('say').innerHTML =
+    '<h3>Reading this</h3>' +
+    '<p>Your biggest cost is <b>' + big[0].toLowerCase() + '</b>, at ' + money(big[2]) +
+    ' a month, ' + (big[2]/now.total*100).toFixed(0) + '% of the bill.</p>' +
+    '<p>One memorial costs ' + money(marg) + ' a month, or <b>' + money(life) +
+    '</b> if you keep it ten years. At ' + money(V.price) + ' you keep <b class="' +
+    (profit>=0?'pos':'neg') + '">' + money(profit) + '</b> of that.</p>' +
+    '<p>' + (n < 400
+      ? 'At ' + n.toLocaleString() + ' memorials most of the bill is the flat twenty dollar ' +
+        'hosting fee, so there is nothing to optimise yet. Costs start behaving like a real ' +
+        'per-memorial business somewhere past a thousand.'
+      : 'At ' + n.toLocaleString() + ' memorials the flat fees have faded, so the per-memorial ' +
+        'number above is the one that matters now.') + '</p>' +
+    '<h3>Storing is cheap, showing is not</h3>' +
+    '<p>Keeping the photos costs ' + money(now.store) + ' a month. Sending them to people who ' +
+    'open the memorial costs ' + money(now.egress) + '. That is ' +
+    (now.store>0 ? (now.egress/now.store).toFixed(0) + ' times more' : 'the larger share') +
+    ', and it is why your costs track how widely memorials get shared rather than how many ' +
+    'photos are in them. One new visitor downloads more than it costs to store that memorial ' +
+    'for a whole month.</p>' +
+    '<h3>On price</h3>' +
+    '<p>' + (okCount === points.length
+      ? 'Every price in the table covers a full hundred years of costs. The question is not ' +
+        'whether you can break even, it is what the memorial is worth to the family.'
+      : okCount === 0
+      ? 'None of these prices cover a hundred years at these settings. One memorial costs ' +
+        money(century) + ' over that span, more than the highest price shown. Charge more, cap ' +
+        'the photos, or send a smaller image size.'
+      : 'The first ' + (points.length - okCount) + ' price' +
+        (points.length - okCount === 1 ? '' : 's') + ' lose money over a hundred years. ' +
+        'A memorial costs ' + money(century) + ' across that span, so anything below about ' +
+        price$(Math.ceil((century + 0.30) / 0.971)) + ' is underwater before Stripe.') +
+    ' Infrastructure is ' + (V.price > 0 ? (century/V.price*100).toFixed(1) + '% of a ' +
+      price$(V.price) + ' sale, and Stripe takes ' + (fee/V.price*100).toFixed(1) + '%'
+      : 'not covered at all while the price is zero') + '.</p>';
+
+  // Three photo sizes the page could send. Sizes are what the upload pipeline produces.
+  const opts = [
+    ['Full size',  K.srcMiB*K.origRatio, 'The original photo, untouched.',
+     'Perfect, and about sixty times more than the strip can show.'],
+    ['Medium',     K.medMiB,             '1600 pixels wide.',
+     'Sharp on every screen, including retina.'],
+    ['Thumbnail',  K.thumbMiB,           '400 pixels wide.',
+     'Sharp on a normal screen. Wide landscape shots go slightly soft on retina.']
+  ];
+  const current = modeMiB();
+  $('photoOpts').innerHTML =
+    '<tr><th>Sends</th><th>Per photo</th><th>A visitor downloads</th>' +
+    '<th>Your bill</th><th>One memorial<br>10 yrs</th><th>One memorial<br>100 yrs</th>' +
+    '<th style="text-align:left">Quality</th></tr>' +
+    opts.map(([name, mib, sub, qual]) => {
+      const m = model(n, mib);
+      const perLife = Math.max(0, model(n+1, mib).total - m.total) * K.months;
+      const perView = K.galleryShare * V.photos * mib;
+      const on = Math.abs(mib - current) < 1e-9;
+      return '<tr' + (on ? ' class="here"' : '') + '>' +
+        '<td>' + name + (on ? ' <span style="font-weight:400;color:var(--dim)">(in use now)</span>' : '') +
+        '<span style="display:block;font-weight:400;font-size:12.5px;color:var(--dim)">' + sub + '</span></td>' +
+        '<td class="num">' + (mib >= 1 ? mib.toFixed(2) + ' MB' : Math.round(mib*1024) + ' KB') + '</td>' +
+        '<td class="num">' + (perView >= 1 ? perView.toFixed(0) + ' MB' : Math.round(perView*1024) + ' KB') + '</td>' +
+        '<td class="num"><b>' + money(m.total) + '</b></td>' +
+        '<td class="num">' + money(perLife) + '</td>' +
+        '<td class="num">' + money(perLife * 10) + '</td>' +
+        '<td style="text-align:left;font-weight:400;font-size:13px;color:var(--dim)">' + qual + '</td></tr>';
+    }).join('');
+
+  // If two rows land on the same bill, say why rather than leave it looking broken.
+  const bills = opts.map(([,mib]) => model(n, mib).total);
+  const tied = Math.abs(bills[1] - bills[2]) < 0.005;
+  const allTied = tied && Math.abs(bills[0] - bills[1]) < 0.005;
+  const best = bills[0] - Math.min(bills[1], bills[2]);
+  // Where each option stops being free: 93.13 GiB of bandwidth a month, given away by Google.
+  const perMemGiB = m => V.views * (1-K.returning) * K.galleryShare * V.photos * m / 1024;
+  const freeUntil = m => perMemGiB(m) > 0 ? Math.floor(93.13 / perMemGiB(m)) : Infinity;
+  const capOf = x => x === Infinity ? 'any number of' : x.toLocaleString();
+
+  $('photoNote').innerHTML = allTied
+    ? 'Nobody is opening memorials often enough here for photo size to cost anything yet. '
+      + 'Raise the views slider and the three options separate.'
+    : tied
+    ? 'All three options store the same photos and do the same database work. The only thing that '
+      + 'differs is how many bytes go out to a visitor, and Google gives you about 93 GB of that '
+      + 'free every month. At ' + n.toLocaleString() + ' memorials, medium fits inside the free '
+      + 'allowance and so does thumbnail, so both come to the same bill. Medium starts costing '
+      + 'money past roughly ' + capOf(freeUntil(K.medMiB)) + ' memorials, thumbnail past about '
+      + capOf(freeUntil(K.thumbMiB)) + '. Either one saves ' + money(best)
+      + ' a month against sending full size.'
+    : 'Sending medium instead of full size saves ' + money(bills[0]-bills[1]) +
+      ' a month. Thumbnails save ' + money(bills[0]-bills[2]) + ', but wide landscape photos ' +
+      'go slightly soft on a retina screen, so medium is the safer choice for a memorial.';
+
+  $('prices').innerHTML =
+    '<tr><th>Price</th><th>Stripe takes</th><th>Costs you<br>over 100 yrs</th><th>You keep</th>' +
+    '<th>Across ' + n.toLocaleString() + ' memorials</th></tr>' +
+    points.map(p => {
+      const f = p * R.stripePct + R.stripeFix;
+      const k = p - f - century;
+      return '<tr' + (p === V.price ? ' class="here"' : '') + '>' +
+        '<td class="num">' + price$(p) + '</td>' +
+        '<td class="num">' + money(f) + '</td>' +
+        '<td class="num">' + money(century) + '</td>' +
+        '<td class="num ' + (k>=0?'pos':'neg') + '"><b>' + money(k) + '</b></td>' +
+        '<td class="num ' + (k>=0?'pos':'neg') + '">' + money(k*n) + '</td></tr>';
+    }).join('');
+
+  $('foot').innerHTML =
+    '<b>Pinned behind the scenes:</b> half of visitors are repeat visitors; a typical photo is 4 MB ' +
+    'from a phone; a memorial has about ' + K.contributors + ' contributors and ' + K.comments +
+    ' comments loaded at a time; storage sits in a single US region; memorials are kept ten years. ' +
+    'Free allowances from Google and Vercel are subtracted before anything is charged.<br><br>' +
+    'Rates were checked on 17 August 2026 against Google Cloud and Vercel pricing pages. Photo ' +
+    'sizes and visitor behaviour are estimates rather than measurements, because Coda has no live ' +
+    'traffic yet. Treat the shape of these numbers as reliable and the exact pennies as provisional.';
+}
+
+$('sliders').innerHTML = S.map(s =>
+  '<div class="s"><label><span>' + s.l + '</span><b class="num" id="v_' + s.k + '"></b></label>' +
+  '<input type="range" id="i_' + s.k + '" min="' + s.min + '" max="' + s.max +
+  '" step="' + (s.step || 1) + '" value="' + s.def + '">' +
+  '<div class="h">' + s.h + '</div></div>').join('');
+
+S.forEach(s => {
+  const el = $('i_' + s.k), out = $('v_' + s.k);
+  const show = () => out.textContent = s.k === 'memorials' ? memorials().toLocaleString()
+                   : s.k === 'price' ? '$' + V.price
+                   : V[s.k].toLocaleString();
+  el.addEventListener('input', () => { V[s.k] = +el.value; show(); render(); });
+  show();
+});
+const modeHints = {
+  orig:  'Perfect quality, and about sixty times more data than the strip can show.',
+  med:   'Sharp on every screen including retina. The safe choice for a memorial.',
+  thumb: 'Sharp on a normal screen. Wide landscape photos go slightly soft on retina.'
+};
+const segBtns = [...document.getElementById('photoMode').querySelectorAll('button')];
+function setMode(m){
+  MODE = m;
+  segBtns.forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  segBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === m)));
+  document.getElementById('modeHint').textContent = modeHints[m];
+  render();
+}
+segBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.m)));
+setMode('orig');
+</script>
